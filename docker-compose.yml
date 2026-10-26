@@ -1,0 +1,22 @@
+services:
+  backend:
+    # Build the FastAPI image from its own directory and publish its API port.
+    build:
+      context: ./backend
+    container_name: wattwise-backend
+    ports:
+      - "8000:8000"
+
+  frontend:
+    # The API base URL is embedded into the static frontend during its build.
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: http://localhost:8000
+    container_name: wattwise-frontend
+    ports:
+      # Expose Nginx's container port 80 as localhost:3000.
+      - "3000:80"
+    # Start the backend service before the frontend container.
+    depends_on:
+      - backend

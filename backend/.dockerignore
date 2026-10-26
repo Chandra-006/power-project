@@ -1,0 +1,7 @@
+# Exclude local Python environments, bytecode, secrets, and Git metadata
+# from the backend Docker build context.
+.venv/
+__pycache__/
+*.py[cod]
+.env
+.git/
