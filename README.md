@@ -4,7 +4,7 @@
 
 WATTWISE is a pilot dashboard for comparing UK wind generation with published wind forecasts over January 2026. It retrieves data from the Elexon BMRS API, matches actuals with forecasts eligible at a configurable UTC decision cutoff, and presents forecast errors and accuracy metrics.
 
-> The dashboard currently requests analysis for 1–2 January 2026. Its January date label is informational; date-range selection is not implemented in the frontend.
+-- The dashboard currently requests analysis for 1–2 January 2026. Its January date label is informational; date-range selection is not implemented in the frontend.
 
 ## Table of contents
 
@@ -25,13 +25,13 @@ WATTWISE is a pilot dashboard for comparing UK wind generation with published wi
 - [Demo video](#demo-video)
 - [AI tools used](#ai-tools-used)
 
-## Project overview
+# Project overview
 
 WATTWISE focuses on UK wind generation data for January 2026. The frontend requests forecast analysis from the FastAPI backend and shows matched hourly actual and forecast values, a forecast-error chart, summary metrics, and a CSV export.
 
 The interface is a historical pilot and decision-support view. It does not calculate total electricity demand or residual demand.
 
-## Architecture
+# Architecture
 
 WATTWISE uses a small two-service architecture: a React single-page frontend requests data from a FastAPI backend, which retrieves records from the external Elexon BMRS API and performs the forecast analysis. There is no database in the current implementation.
 
@@ -61,7 +61,7 @@ flowchart LR
     Client --> UI
 ```
 
-### Components and responsibilities
+# Components and responsibilities
 
 | Component | Responsibility |
 | --- | --- |
@@ -72,7 +72,7 @@ flowchart LR
 | **Analysis service** (`backend/analysis_service.py`) | Normalizes timestamps and values, aggregates actuals to hourly values, selects forecasts published before the configured cutoff, and calculates forecast errors and metrics. |
 | **Docker Compose** (`docker-compose.yml`) | Builds and runs the backend API and the static frontend as separate services. |
 
-### Analysis request flow
+# Analysis request flow
 
 1. On page load, the dashboard requests `GET /api/analysis` for **1–2 January 2026** through the frontend API helper.
 2. FastAPI validates the date range, fetches actual generation, and fetches forecast records covering the requested end date and up to two preceding publication days.
@@ -82,9 +82,9 @@ flowchart LR
 
 The browser communicates with FastAPI over HTTP; the backend makes outbound HTTP requests to Elexon. The analysis endpoint currently performs actual and forecast retrieval before calling the analysis service. Raw actuals and forecasts are also available through their own API endpoints.
 
-### Container layout
+# Container layout
 
-In Docker Compose, the backend container runs Uvicorn on port `8000` and publishes it on host port `8000`. The frontend image builds the Vite application with Node, then serves the generated static files from Nginx on container port `80`, published as host port `3000`. The frontend API base URL is embedded at build time; in the provided local Compose configuration it is `http://localhost:8000`.
+In Docker Compose, the backend container runs Uvicorn on port `8000` and publishes it on host port `8000`. The frontend image builds the Vite application with Node, then serves the generated static files from Nginx on container port `80`, published as host port `3000`. The frontend API base URL is embedded at build time; the provided local Compose configuration it is `http://localhost:8000`.
 
 ## Features
 
